@@ -10,28 +10,20 @@ export default class App extends Component {
   componentDidMount() {
     let res = [];
     for (let i = 0; i < 5; i++) {
-      fetch("https://api.chucknorris.io/jokes/random")
-        .then((response) => response.json())
-        .then((posts) => {
-          res.push(posts.value);
-          // const updatePosts = posts.map(post => {
-          //   return {
-          //     ...post,
-          //   }
-          // })
-          // this.setState({data: updatePosts})
-        });
+      res.push(
+        fetch("https://api.chucknorris.io/jokes/random") // можно вынести в отдельную функцию как мы делали на занятии
+          .then((response) => response.json())
+      )
     }
-    this.setState({data: res })
-    // Promise.all(res).then(data => {
-    //   console.log(data);
-    //   this.setState({data })
-    // })
-    
-    
+    Promise.all(res).then(jokes => {
+      const data = jokes.map(joke => joke.value)
+      this.setState({ data });
+    })
+
+
   }
   render() {
-    console.log('[app]render', this.state.data);
+    // console.log('[app]render', this.state.data);
     return (
       <div className="container">
         <div className="con__info">
@@ -39,6 +31,7 @@ export default class App extends Component {
           <div className="list">
             {
               this.state.data.map(item => {
+                console.log(item);
                 return <Joke
                   key={item}
                   joke={item}
